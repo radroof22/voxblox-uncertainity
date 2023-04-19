@@ -170,10 +170,17 @@ inline void generateVoxbloxMeshMsg(MeshLayer* mesh_layer, ColorMode color_mode,
     mesh_block.index[0] = block_index.x();
     mesh_block.index[1] = block_index.y();
     mesh_block.index[2] = block_index.z();
+    mesh_block.index[3] = block_index.z_upper();
+    mesh_block.index[4] = block_index.z_lower();
+
 
     mesh_block.x.reserve(mesh->vertices.size());
     mesh_block.y.reserve(mesh->vertices.size());
     mesh_block.z.reserve(mesh->vertices.size());
+    mesh_block.z_upper.reserve(mesh->vertices.size());
+    mesh_block.z_lower.reserve(mesh->vertices.size());
+
+
 
     // normal coloring is used by RViz plugin by default, so no need to send it
     if (color_mode != kNormals) {
@@ -205,6 +212,12 @@ inline void generateVoxbloxMeshMsg(MeshLayer* mesh_layer, ColorMode color_mode,
                              normalized_verticies.y());
       mesh_block.z.push_back(std::numeric_limits<uint16_t>::max() *
                              normalized_verticies.z());
+      
+      // add the std dev bounds z
+      mesh_block.z_upper_bound.push_back(std::numeric_limits<uint16_t>::max() *
+                             (normalized_verticies.z() + normalized_verticies.z_std_dev()));
+      mesh_block.z_lower_bound.push_back(std::numeric_limits<uint16_t>::max() *
+                            (normalized_verticies.z() - normalized_verticies.z_std_dev()))
 
       if (color_mode != kNormals) {
         const std_msgs::ColorRGBA color_msg =

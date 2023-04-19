@@ -283,7 +283,7 @@ class MeshLayer {
     size_bytes += sizeof(block_size_);
     size_bytes += sizeof(block_size_inv_);
 
-    // Calculate size of mesh blocks
+    // Calculate size of s
     for (const auto& idx_mesh_pair : mesh_map_) {
       CHECK(idx_mesh_pair.second);
       size_bytes += idx_mesh_pair.second->getMemorySize();

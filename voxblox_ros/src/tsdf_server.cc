@@ -482,7 +482,7 @@ void TsdfServer::publishMap(bool reset_remote_map) {
 void TsdfServer::publishPointclouds() {
   // Combined function to publish all possible pointcloud messages -- surface
   // pointclouds, updated points, and occupied points.
-  publishAllUpdatedTsdfVoxels();
+publishAllUpdatedTsdfVoxels();
   publishTsdfSurfacePoints();
   publishTsdfOccupiedNodes();
   if (publish_slices_) {

@@ -9,6 +9,9 @@ uint16[] x
 uint16[] y
 uint16[] z
 
+uint16[] z_upper
+uint16[] z_lower
+
 # Color information may be missing
 uint8[] r
 uint8[] g

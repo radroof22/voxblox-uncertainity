@@ -29,7 +29,7 @@ VoxbloxMeshVisual::~VoxbloxMeshVisual() {
 void VoxbloxMeshVisual::setMessage(const voxblox_msgs::Mesh::ConstPtr& msg) {
   for (const voxblox_msgs::MeshBlock& mesh_block : msg->mesh_blocks) {
     const voxblox::BlockIndex index(mesh_block.index[0], mesh_block.index[1],
-                                    mesh_block.index[2]);
+                                    mesh_block.index[2], mesh_block.index[3], mesh_block.index[4]);
 
     size_t vertex_index = 0u;
     voxblox::Mesh mesh;
@@ -55,9 +55,18 @@ void VoxbloxMeshVisual::setMessage(const voxblox_msgs::Mesh::ConstPtr& msg) {
           (static_cast<float>(mesh_block.z[i]) * point_conv_factor +
            static_cast<float>(index[2])) *
           msg->block_edge_length;
+      // upper and lower bounds
+      const float mesh_z_upper =
+          (static_cast<float>(mesh_block.z_upper[i]) * point_conv_factor +
+           static_cast<float>(index[3])) *
+          msg->block_edge_length;
+      const float mesh_z_lower =
+          (static_cast<float>(mesh_block.z_lower[i]) * point_conv_factor +
+           static_cast<float>(index[4])) *
+          msg->block_edge_length;
 
       mesh.indices.push_back(vertex_index++);
-      mesh.vertices.emplace_back(mesh_x, mesh_y, mesh_z);
+      mesh.vertices.emplace_back(mesh_x, mesh_y, mesh_z, mesh_z_upper, mesh_z_lower);
     }
 
     // calculate normals

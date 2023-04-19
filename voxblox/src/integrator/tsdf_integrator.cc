@@ -397,7 +397,7 @@ void MergedTsdfIntegrator::integrateVoxel(
     merged_color =
         Color::blendTwoColors(merged_color, merged_weight, color, point_weight);
     merged_weight += point_weight;
-
+   
     // only take first point when clearing
     if (clearing_ray) {
       break;
@@ -405,6 +405,21 @@ void MergedTsdfIntegrator::integrateVoxel(
   }
 
   const Point merged_point_G = T_G_C * merged_point_C;
+  FloatingPoint z_std_dev = 0;
+
+  // determine the uncertainity metric
+  for (const size_t pt_idx : kv.second) {
+    const Point& point_C = points_C[pt_idx];
+
+    const float point_weight = getVoxelWeight(point_C);
+    if (point_weight < kEpsilon) {
+      continue;
+    }
+
+    z_std_dev += (point_C(2, 0) - merged(2, 0)) * point_weight
+  }
+
+  z_std_dev = sqrt(z_std_dev);
 
   RayCaster ray_caster(origin, merged_point_G, clearing_ray,
                        config_.voxel_carving_enabled, config_.max_ray_length_m,
